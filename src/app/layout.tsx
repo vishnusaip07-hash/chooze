@@ -1,5 +1,4 @@
 // app/layout.tsx
-import { Analytics } from "@vercel/analytics/next"
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
