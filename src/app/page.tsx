@@ -8,11 +8,11 @@ const features = [
     href: "/simulator",
   },
   {
-  title: "Rank Predictor",
-  desc: "Predict rank from percentile & data",
-  href: "/rank-predictor",
-  }, 
- {
+    title: "Rank Predictor",
+    desc: "Predict rank from percentile & data",
+    href: "/rank-predictor",
+  },
+  {
     title: "Chat / Assistant",
     desc: "Ask counselling doubts instantly",
     href: "/chat",
@@ -42,9 +42,16 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Ad / wide section */}
-      <div className="mt-16 rounded-2xl border border-zinc-800 bg-zinc-900 p-10 text-center text-zinc-400">
-        Advertisement / Premium Features Banner
+      {/* Phase 1 Important Note */}
+      <div className="mt-16 rounded-2xl border border-blue-500/40 bg-blue-500/10 p-8 text-center">
+        <h2 className="text-lg font-semibold text-blue-300 mb-2">
+          ℹ️ Important Note
+        </h2>
+        <p className="text-blue-200 text-sm">
+          Current results are based on Phase 1 counselling data. Closing ranks may
+          vary in Phase 2 and subsequent rounds depending on applicant participation
+          and seat movement.
+        </p>
       </div>
     </div>
   );
