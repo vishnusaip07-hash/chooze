@@ -1,6 +1,7 @@
 // src/lib/rankPredictor.ts
 
-export const TOTAL_CANDIDATES = 1036211;
+// JEE Main 2026 Session 1 Approx Total Appeared
+export const TOTAL_CANDIDATES = 1300368;
 
 export type RankRange = {
   best: number;
@@ -21,12 +22,16 @@ export type Category =
   | "SC"
   | "ST";
 
-const CATEGORY_MULTIPLIER: Record<Category, number> = {
-  OPEN: 1,
-  "OBC-NCL": 0.25,
-  EWS: 0.35,
-  SC: 0.15,
-  ST: 0.08,
+/*
+  Approx category participation distribution
+  (based on historical NTA patterns)
+*/
+const CATEGORY_DISTRIBUTION: Record<Category, number> = {
+  OPEN: 0.43,
+  "OBC-NCL": 0.37,
+  EWS: 0.10,
+  SC: 0.07,
+  ST: 0.03,
 };
 
 export function predictRanks(
@@ -40,26 +45,38 @@ export function predictRanks(
   const normalizedCategory =
     (category?.toUpperCase() as Category) ?? "OPEN";
 
-  const baseRank =
+  // ---------------------------
+  // OPEN RANK (AIR)
+  // ---------------------------
+  const rawOpenRank =
     ((100 - percentile) / 100) * TOTAL_CANDIDATES;
 
-  const safeBaseRank = Math.max(1, baseRank);
+  const openRank = Math.max(1, Math.round(rawOpenRank));
 
+  // Rank Range Buffer
   const range: RankRange = {
-    best: Math.max(1, Math.round(safeBaseRank * 0.9)),
-    likely: Math.max(1, Math.round(safeBaseRank)),
-    worst: Math.max(1, Math.round(safeBaseRank * 1.15)),
+    best: Math.max(1, Math.round(openRank * 0.9)),
+    likely: openRank,
+    worst: Math.max(1, Math.round(openRank * 1.15)),
   };
 
-  const openRank = range.likely;
+  // ---------------------------
+  // CATEGORY RANK
+  // ---------------------------
+  const categoryShare =
+    CATEGORY_DISTRIBUTION[normalizedCategory] ?? 1;
 
-  const multiplier =
-    CATEGORY_MULTIPLIER[normalizedCategory] ?? 1;
+  const totalCategoryCandidates =
+    TOTAL_CANDIDATES * categoryShare;
+
+  const rawCategoryRank =
+    ((100 - percentile) / 100) *
+    totalCategoryCandidates;
 
   const categoryRank =
     normalizedCategory === "OPEN"
       ? null
-      : Math.max(1, Math.round(openRank * multiplier));
+      : Math.max(1, Math.round(rawCategoryRank));
 
   return {
     openRank,
